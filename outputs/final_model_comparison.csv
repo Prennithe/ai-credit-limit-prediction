@@ -1,0 +1,6 @@
+Model,Train MAE,Test MAE,Train RMSE,Test RMSE,Train R2,Test R2,Overfitting Gap (R2),Overfitting Status
+Original Linear Regression,73726.3168,74421.3032,99333.7698,100325.9351,0.4137,0.4025,0.0112,No/Low Overfitting
+Original Random Forest,25563.0328,68642.7248,36207.1856,94605.5994,0.9221,0.4687,0.4534,High Overfitting
+Original XGBoost,48559.3165,67841.6883,67943.7954,94668.7628,0.7257,0.468,0.2577,High Overfitting
+Tuned Random Forest,48818.6901,67369.5252,69313.7649,93249.0946,0.7145,0.4838,0.2307,High Overfitting
+Tuned XGBoost,55706.4225,65811.7096,78035.402,91756.7001,0.6382,0.5002,0.138,Moderate Overfitting

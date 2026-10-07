@@ -1,0 +1,6 @@
+=== MODEL COMPARISON TABLE ===
+
+            Model  Training Time (s)  Train MAE   Test MAE  Train RMSE   Test RMSE  Train R2  Test R2 Overfitting Status
+Linear Regression             0.2742 73726.3168 74421.3032  99333.7698 100325.9351    0.4137   0.4025 No/Low Overfitting
+    Random Forest            28.6187 25563.0328 68642.7248  36207.1856  94605.5994    0.9221   0.4687   High Overfitting
+          XGBoost             2.6365 48559.3165 67841.6883  67943.7954  94668.7628    0.7257   0.4680   High Overfitting

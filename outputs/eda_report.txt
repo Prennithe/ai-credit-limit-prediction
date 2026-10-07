@@ -1,0 +1,5 @@
+EDA Observations:
+1. LIMIT_BAL is right-skewed, with most limits clustered at the lower end.
+2. Age is also right-skewed, mostly centered around late 20s to 30s.
+3. Education level shows a slight trend where higher education correlates with higher credit limits.
+4. Bill amounts are highly correlated with each other.

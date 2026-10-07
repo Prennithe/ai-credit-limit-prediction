@@ -1,0 +1,37 @@
+==================================================
+MODEL OPTIMIZATION REPORT - CREDIT CARD LIMIT PREDICTION
+==================================================
+
+1. TUNING PARAMETERS:
+--- XGBoost ---
+Best Parameters: {'subsample': 0.8, 'reg_lambda': 10.0, 'reg_alpha': 10.0, 'n_estimators': 300, 'min_child_weight': 3, 'max_depth': 6, 'learning_rate': 0.05, 'colsample_bytree': 0.9}
+5-Fold CV Best Neg MAE: -65506.9434
+
+--- Random Forest ---
+Best Parameters: {'n_estimators': 200, 'min_samples_split': 10, 'min_samples_leaf': 8, 'max_features': 0.7, 'max_depth': None}
+5-Fold CV Best Neg MAE: -66624.1302
+
+2. COMPLETE MODEL COMPARISON (5 MODELS):
+                     Model  Train MAE   Test MAE  Train RMSE   Test RMSE  Train R2  Test R2  Overfitting Gap (R2)   Overfitting Status
+Original Linear Regression 73726.3168 74421.3032  99333.7698 100325.9351    0.4137   0.4025                0.0112   No/Low Overfitting
+    Original Random Forest 25563.0328 68642.7248  36207.1856  94605.5994    0.9221   0.4687                0.4534     High Overfitting
+          Original XGBoost 48559.3165 67841.6883  67943.7954  94668.7628    0.7257   0.4680                0.2577     High Overfitting
+       Tuned Random Forest 48818.6901 67369.5252  69313.7649  93249.0946    0.7145   0.4838                0.2307     High Overfitting
+             Tuned XGBoost 55706.4225 65811.7096  78035.4020  91756.7001    0.6382   0.5002                0.1380 Moderate Overfitting
+
+3. COMPARATIVE ANALYSIS & OVERFITTING REDUCTION:
+   - Lowest Test MAE: Tuned XGBoost (65811.7096)
+   - Lowest Test RMSE: Tuned XGBoost (91756.7001)
+   - Highest Test R2: Tuned XGBoost (0.5002)
+
+   Overfitting Gap Reduction:
+   - Original XGBoost Overfitting Gap (R2): 0.2577
+   - Tuned XGBoost Overfitting Gap (R2): 0.138
+   
+   - Original Random Forest Overfitting Gap (R2): 0.4534
+   - Tuned Random Forest Overfitting Gap (R2): 0.2307
+
+4. FINAL MODEL SELECTION:
+   Selected Model: Tuned XGBoost
+   Justification: It achieved the lowest Test MAE, high Test R2, and significantly reduced the train-test performance gap compared to the unconstrained baseline model.
+==================================================

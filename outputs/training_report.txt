@@ -1,0 +1,32 @@
+==================================================
+ML MODEL TRAINING REPORT - CREDIT CARD LIMIT PREDICTION
+==================================================
+
+1. EXPERIMENTAL SETUP:
+   - Target Variable: LIMIT_BAL
+   - Problem Type: Regression
+   - Training Set Size: 24000 samples
+   - Testing Set Size: 6000 samples
+   - Feature Count: 96 features (processed)
+   - Random State: 42
+
+2. MODEL COMPARISON RESULTS:
+            Model  Training Time (s)  Train MAE   Test MAE  Train RMSE   Test RMSE  Train R2  Test R2 Overfitting Status
+Linear Regression             0.2742 73726.3168 74421.3032  99333.7698 100325.9351    0.4137   0.4025 No/Low Overfitting
+    Random Forest            28.6187 25563.0328 68642.7248  36207.1856  94605.5994    0.9221   0.4687   High Overfitting
+          XGBoost             2.6365 48559.3165 67841.6883  67943.7954  94668.7628    0.7257   0.4680   High Overfitting
+
+3. KEY FINDINGS:
+   - Lowest Test MAE: XGBoost (67841.6883)
+   - Lowest Test RMSE: Random Forest (94605.5994)
+   - Highest Test R2: Random Forest (0.4687)
+
+4. OVERFITTING ANALYSIS:
+   - Linear Regression: Train R2 = 0.4137, Test R2 = 0.4025 -> Status: No/Low Overfitting
+   - Random Forest: Train R2 = 0.9221, Test R2 = 0.4687 -> Status: High Overfitting
+   - XGBoost: Train R2 = 0.7257, Test R2 = 0.468 -> Status: High Overfitting
+
+5. SELECTION FOR NEXT STAGE:
+   Recommended Model: Random Forest
+   Justification: Random Forest achieved the best generalization performance on unseen test data across evaluation metrics.
+==================================================

@@ -1,0 +1,108 @@
+==================================================
+EXPLAINABLE AI (SHAP) REPORT
+CREDIT CARD LIMIT PREDICTION
+============================
+
+1. FEATURE IMPORTANCE RANKING
+
+---
+
+Top 10 features based on Mean Absolute SHAP Value:
+
+1. total_payment_amount   : 23177.29
+
+2. AGE                    : 18643.42
+
+3. EDUCATION_1            : 14316.44
+
+4. max_bill_amount        : 12468.07
+
+5. total_bill_amount      : 8612.55
+
+6. payment_to_bill_ratio  : 7282.83
+
+7. num_payment_delays     : 6863.91
+
+8. PAY_AMT6               : 6622.24
+
+9. BILL_AMT1              : 5878.93
+
+10. BILL_AMT2             : 5511.21
+
+2. GLOBAL MODEL BEHAVIOR
+
+---
+
+The SHAP analysis shows that payment behavior and historical
+billing patterns are among the strongest factors influencing
+the model's predicted credit limit.
+
+Higher total payment amounts and larger historical bill amounts
+have a strong influence on predicted credit-limit values.
+
+Age is also an important feature in the model's predictions.
+
+EDUCATION_1, representing Graduate School education in the
+encoded dataset, is another important feature influencing
+predictions.
+
+The payment-to-bill ratio provides information about the
+relationship between customer payments and outstanding bills
+and contributes significantly to the model's predictions.
+
+The number of payment delays is also an important feature.
+Higher numbers of payment delays generally contribute to lower
+predicted credit-limit values.
+
+3. INDIVIDUAL CUSTOMER EXPLANATIONS
+
+---
+
+Customer Sample 0:
+
+The model's predicted credit limit was influenced primarily by
+historical maximum bill amounts and repayment-related features.
+
+Customer Sample 1:
+
+The model's predicted credit limit was strongly influenced by
+the payment-to-bill ratio and repayment-status features.
+
+4. KEY INSIGHTS
+
+---
+
+• Payment behavior is the strongest group of factors influencing
+the model's predictions.
+
+• Historical bill amounts are important indicators for predicted
+credit limits.
+
+• Age and education-related features also contribute
+significantly to predictions.
+
+• Payment delays generally have a negative influence on predicted
+credit limits.
+
+• SHAP provides both global feature importance and
+customer-level explanations for individual predictions.
+
+5. INTERPRETATION NOTE
+
+---
+
+SHAP values explain how the trained machine-learning model uses
+different features to arrive at its predictions. They describe
+model behavior and should not be interpreted as proof of direct
+causal relationships.
+
+The dataset was originally created for credit-card default
+prediction rather than specifically for credit-limit prediction.
+Therefore, this project predicts a credit limit based on patterns
+learned from historical customer profiles and assigned credit
+limits. The output should be treated as an ML-based prediction or
+recommendation rather than a guaranteed optimal banking decision.
+
+==================================================
+END OF SHAP REPORT
+==================

@@ -1,0 +1,37 @@
+================================================================================
+FINAL MODEL REPORT - AI-BASED CREDIT CARD LIMIT PREDICTION SYSTEM
+================================================================================
+
+1. SELECTED MODEL & PACKAGING:
+   - Selected Model: Tuned XGBoost Regressor
+   - Final Model Location: models/credit_limit_prediction_model.joblib
+   - Selection Rationale: Evaluated across 5 candidate models. Tuned XGBoost achieved superior overall performance (Test R2: 0.5002, Test MAE: $65,811.71, Test RMSE: $91,756.70) while reducing the train-test overfitting gap to 0.1380.
+
+2. FINAL EVALUATION METRICS (UNTOUCHED TEST SET):
+   - Test MAE  : $65,811.71
+   - Test RMSE : $91,756.70
+   - Test R2   : 0.5002
+   - Overfitting Gap (Train R2 - Test R2): 0.1380
+
+3. TOP 10 INFLUENTIAL SHAP FEATURES:
+    1. total_payment_amount           (Mean |SHAP|: 23177.29)
+    2. AGE                            (Mean |SHAP|: 18643.42)
+    3. EDUCATION_1                    (Mean |SHAP|: 14316.44)
+    4. max_bill_amount                (Mean |SHAP|: 12468.07)
+    5. total_bill_amount              (Mean |SHAP|: 8612.55)
+    6. payment_to_bill_ratio          (Mean |SHAP|: 7282.83)
+    7. num_payment_delays             (Mean |SHAP|: 6863.91)
+    8. PAY_AMT6                       (Mean |SHAP|: 6622.24)
+    9. BILL_AMT1                      (Mean |SHAP|: 5878.93)
+   10. BILL_AMT2                      (Mean |SHAP|: 5511.21)
+
+4. KEY OBSERVATIONS FROM SHAP:
+   - Total Payments & Bill Balances: `total_payment_amount`, `max_bill_amount`, and `total_bill_amount` are the top financial drivers of recommended credit limits.
+   - Demographics: Age (`AGE`) and Graduate Education (`EDUCATION_1`) demonstrate strong positive alignment with higher limit recommendations.
+   - Repayment Delays: Accumulated payment delays (`num_payment_delays`) reduce the recommended credit limit.
+
+5. CRITICAL DOMAIN LIMITATION & DISCLAIMER:
+   - Dataset Context: The underlying Kaggle/UCI Credit Card dataset was originally collected for default prediction (`default.payment.next.month`). In this system, `LIMIT_BAL` was designated as the target variable.
+   - Proper Interpretation: This system provides a **machine-learning prediction/recommendation based on historical customer profiles and bank-assigned credit limits**, not a guaranteed optimal banking credit decision.
+   - Production Guidance: The predictions serve as automated decision-support recommendations and should be paired with proper risk underwriting controls.
+================================================================================

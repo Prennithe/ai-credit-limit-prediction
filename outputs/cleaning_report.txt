@@ -1,0 +1,4 @@
+--- CLEANING REPORT ---
+Initial shape: (30000, 25)
+Shape after removing duplicates and dropping ID / target leakage: (30000, 23)
+Grouped undocumented values in EDUCATION (to 4) and MARRIAGE (to 3).
