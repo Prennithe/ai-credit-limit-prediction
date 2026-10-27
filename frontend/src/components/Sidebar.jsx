@@ -96,9 +96,6 @@ function NavItem({ item, collapsed, hasCustomer }) {
       {!collapsed && (
         <span className="truncate flex-1">{item.label}</span>
       )}
-      {!collapsed && item.requiresCustomer && hasCustomer && (
-        <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-teal-400)] flex-shrink-0" title="Data available" />
-      )}
     </NavLink>
   );
 }
