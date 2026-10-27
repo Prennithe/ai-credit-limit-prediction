@@ -27,7 +27,10 @@ export default function CustomerSearch({ onSearch, onClear, isLoading, activeSea
       return;
     }
     setValidationError('');
-    const normalized = trimmed.toUpperCase();
+    const normalized = trimmed.toUpperCase().replace(
+      /^(CUST)0*(\d+)$/,
+      (_, prefix, num) => prefix + num.padStart(5, '0')
+    );
     setInputVal(normalized);
     lastActiveIdRef.current = normalized;
     onSearch(normalized);
