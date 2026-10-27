@@ -23,10 +23,10 @@ def main():
             f"Customer {customer_id} retrieved successfully."
         )
 
-        explanation = explainer.explain(customer)
+        explanation, base_value = explainer.explain(customer)
 
         print("\n==========================================")
-        print("TOP SHAP FEATURES")
+        print(f"TOP SHAP FEATURES (Baseline Expected Value: {base_value:.2f})")
         print("==========================================")
 
         for _, row in explanation.head(10).iterrows():

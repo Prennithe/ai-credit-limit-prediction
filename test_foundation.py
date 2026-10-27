@@ -40,8 +40,8 @@ def main():
     
     print("\nTesting SHAP Service...")
     explainer = CreditLimitExplainabilityService()
-    shap_df = explainer.explain(customer)
-    print(f"SHAP Service OK: Returned {len(shap_df)} feature importances.")
+    shap_df, base_value = explainer.explain(customer)
+    print(f"SHAP Service OK: Returned {len(shap_df)} feature importances (Baseline: {base_value:.2f}).")
     
     print("\nTesting Audit Service...")
     audit = AuditService()

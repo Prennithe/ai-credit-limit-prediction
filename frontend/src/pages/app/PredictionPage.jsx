@@ -39,7 +39,7 @@ export default function PredictionPage() {
           <div className="space-y-4">
             <PredictionCard
               prediction={prediction}
-              currentLimit={customer?.credit_limit}
+              currentCreditLimit={customer?.credit_history?.current_credit_limit}
             />
 
             {/* Quick action bar */}

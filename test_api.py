@@ -37,6 +37,7 @@ def test_explanation():
     assert response.status_code == 200
     data = response.json()
     assert "features" in data
+    assert "base_value" in data
     assert isinstance(data["features"], list)
 
 def test_simulate():

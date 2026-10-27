@@ -85,7 +85,7 @@ def get_explanation(customer_id: str):
         raise HTTPException(status_code=404, detail="Customer not found")
         
     try:
-        explanation_df = explainability_service.explain(customer)
+        explanation_df, base_value = explainability_service.explain(customer)
         
         # Convert DataFrame to JSON serializable structure
         features = []
@@ -98,6 +98,7 @@ def get_explanation(customer_id: str):
             
         return {
             "customer_id": customer_id,
+            "base_value": round(float(base_value), 2),
             "features": features
         }
     except Exception as e:

@@ -54,6 +54,11 @@ class CreditLimitExplainabilityService:
 
         values = shap_values.values[0]
 
+        # base_values[0] is the model's expected output over the training set.
+        # It is the starting point of the waterfall decomposition:
+        #   base_value + sum(shap_values) ≈ model.predict(processed_df)[0]
+        base_value = float(shap_values.base_values[0])
+
         # Create explanation dataframe
         explanation_df = pd.DataFrame({
             "feature": feature_names,
@@ -72,4 +77,4 @@ class CreditLimitExplainabilityService:
             ascending=False
         )
 
-        return explanation_df.reset_index(drop=True)
+        return explanation_df.reset_index(drop=True), base_value
