@@ -1,189 +1,267 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { api } from '../services/api';
-import { 
-  Building2, 
-  Activity, 
-  CheckCircle2, 
-  XCircle, 
-  RefreshCw, 
-  ShieldCheck,
-  Server,
-  Layers
-} from 'lucide-react';
+import Header from '../components/Header';
+import CustomerSearch from '../components/CustomerSearch';
+import CustomerProfile from '../components/CustomerProfile';
+import PredictionCard from '../components/PredictionCard';
+import ErrorMessage from '../components/ErrorMessage';
+import { ProfileSkeleton, PredictionSkeleton, FinancialTrendSkeleton, ExplainabilitySkeleton } from '../components/LoadingState';
+import { ShieldCheck, Info } from 'lucide-react';
+
+// Lazy-load heavy chart/form components to split the JS bundle
+const FinancialTrendDashboard = lazy(() => import('../components/FinancialTrendDashboard'));
+const ExplainabilityDashboard = lazy(() => import('../components/ExplainabilityDashboard'));
+const WhatIfSimulator = lazy(() => import('../components/WhatIfSimulator'));
+const EmployeeDecisionPanel = lazy(() => import('../components/EmployeeDecisionPanel'));
 
 export default function Home() {
-  const [backendStatus, setBackendStatus] = useState('checking'); // 'connected', 'unavailable', 'checking'
-  const [healthData, setHealthData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [lastChecked, setLastChecked] = useState(null);
+  const [backendStatus, setBackendStatus] = useState('checking'); // 'connected' | 'unavailable' | 'checking'
+  const [healthLoading, setHealthLoading] = useState(false);
 
-  const checkHealth = async () => {
-    setLoading(true);
+  const [activeCustomerId, setActiveCustomerId] = useState('');
+  const [customer, setCustomer] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const [trendsData, setTrendsData] = useState(null);
+  const [explanationData, setExplanationData] = useState(null);
+
+  // Search-in-progress guard: prevents duplicate concurrent API calls
+  const [isSearching, setIsSearching] = useState(false);
+
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [predictionLoading, setPredictionLoading] = useState(false);
+  const [trendsLoading, setTrendsLoading] = useState(false);
+  const [explanationLoading, setExplanationLoading] = useState(false);
+
+  const [searchError, setSearchError] = useState(null);
+  const [predictionError, setPredictionError] = useState(null);
+  const [trendsError, setTrendsError] = useState(null);
+  const [explanationError, setExplanationError] = useState(null);
+
+  const checkHealth = useCallback(async () => {
+    setHealthLoading(true);
     try {
       const data = await api.getHealth();
       if (data && data.status === 'ok') {
         setBackendStatus('connected');
-        setHealthData(data);
       } else {
         setBackendStatus('unavailable');
-        setHealthData(null);
       }
-    } catch (err) {
+    } catch {
       setBackendStatus('unavailable');
-      setHealthData(null);
     } finally {
-      setLoading(false);
-      setLastChecked(new Date().toLocaleTimeString());
+      setHealthLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     checkHealth();
-  }, []);
+  }, [checkHealth]);
+
+  const handleSearch = async (customerId) => {
+    const trimmedId = customerId.trim();
+    if (!trimmedId) return;
+    // Prevent duplicate concurrent searches
+    if (isSearching) return;
+
+    // Reset previous search state
+    setActiveCustomerId(trimmedId);
+    setCustomer(null);
+    setPrediction(null);
+    setTrendsData(null);
+    setExplanationData(null);
+
+    setSearchError(null);
+    setPredictionError(null);
+    setTrendsError(null);
+    setExplanationError(null);
+
+    setCustomerLoading(true);
+    setIsSearching(true);
+
+    try {
+      // Step 1: Retrieve Customer Profile
+      const customerData = await api.getCustomer(trimmedId);
+      setCustomer(customerData);
+      setCustomerLoading(false);
+
+      // Step 2: Retrieve Model Prediction
+      setPredictionLoading(true);
+      try {
+        const predData = await api.getPrediction(trimmedId);
+        setPrediction(predData);
+      } catch (predErr) {
+        console.error('Prediction fetch failed:', predErr);
+        setPredictionError('Unable to calculate prediction at this time.');
+      } finally {
+        setPredictionLoading(false);
+      }
+
+      // Step 3: Retrieve Financial Trends
+      setTrendsLoading(true);
+      try {
+        const trends = await api.getFinancialTrends(trimmedId);
+        setTrendsData(trends);
+      } catch (trendsErr) {
+        console.error('Financial trends fetch failed:', trendsErr);
+        setTrendsError('Unable to retrieve the customer\'s historical financial trends at this time.');
+      } finally {
+        setTrendsLoading(false);
+      }
+
+      // Step 4: Retrieve SHAP Explanations
+      setExplanationLoading(true);
+      try {
+        const explData = await api.getExplanation(trimmedId);
+        setExplanationData(explData);
+      } catch (explErr) {
+        console.error('Explanation fetch failed:', explErr);
+        setExplanationError('Unable to calculate SHAP explainability at this time.');
+      } finally {
+        setExplanationLoading(false);
+      }
+
+    } catch (err) {
+      setCustomerLoading(false);
+      if (err.status === 404) {
+        setSearchError({ type: 'not_found', searchId: trimmedId });
+      } else if (!err.status || err.message?.includes('Fetch') || err.message?.includes('Network')) {
+        setSearchError({ type: 'backend_down' });
+        setBackendStatus('unavailable');
+      } else {
+        setSearchError({ type: 'generic', customMessage: err.message });
+      }
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleClear = () => {
+    if (isSearching) return;
+    setActiveCustomerId('');
+    setCustomer(null);
+    setPrediction(null);
+    setTrendsData(null);
+    setExplanationData(null);
+
+    setSearchError(null);
+    setPredictionError(null);
+    setTrendsError(null);
+    setExplanationError(null);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between font-sans">
-      {/* Top Enterprise Navigation Bar */}
-      <header className="bg-slate-900 text-white border-b border-slate-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-600 rounded-lg text-white">
-              <Building2 className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="font-semibold text-lg tracking-tight text-white">Apex Global Bank</h1>
-              <p className="text-xs text-slate-400">Enterprise Decision Support</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3 text-xs text-slate-300">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-              <ShieldCheck className="w-3.5 h-3.5 mr-1 text-emerald-400" /> Secure Environment
-            </span>
-          </div>
-        </div>
-      </header>
+      <div>
+        {/* Navigation & Status Header */}
+        <Header
+          backendStatus={backendStatus}
+          onCheckHealth={checkHealth}
+          healthLoading={healthLoading}
+        />
 
-      {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
-        {/* Title Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-8">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-md mb-4 border border-blue-100">
-              <Layers className="w-3.5 h-3.5" />
-              <span>Phase 5A Foundation Active</span>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl tracking-tight">
-              AI-Based Credit Limit Recommendation System
-            </h2>
-            <p className="mt-2 text-base text-slate-600 font-medium">
-              Bank Employee Decision Support Dashboard
-            </p>
-            <p className="mt-4 text-sm text-slate-500 leading-relaxed">
-              This application provides explainable ML credit limit recommendations, real-time what-if scenario simulations, customer financial trend analysis, and comprehensive audit trail logging for bank loan underwriters.
-            </p>
-          </div>
-        </div>
+        {/* Main Workspace */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+          {/* Customer Search Bar */}
+          <CustomerSearch
+            onSearch={handleSearch}
+            onClear={handleClear}
+            isLoading={customerLoading || isSearching}
+            activeSearchId={activeCustomerId}
+          />
 
-        {/* Backend Status Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Server className="w-4 h-4 text-slate-500" />
-              <h3 className="text-sm font-semibold text-slate-800">System Integration & Connectivity</h3>
-            </div>
-            {lastChecked && (
-              <span className="text-xs text-slate-400">
-                Last verified: {lastChecked}
-              </span>
-            )}
-          </div>
+          {/* Search Level Error Messages */}
+          {searchError && (
+            <ErrorMessage
+              type={searchError.type}
+              searchId={searchError.searchId}
+              customMessage={searchError.customMessage}
+              onRetry={checkHealth}
+            />
+          )}
 
-          <div className="p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-full ${
-                  backendStatus === 'connected' ? 'bg-emerald-50 text-emerald-600' :
-                  backendStatus === 'unavailable' ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'
-                }`}>
-                  {backendStatus === 'connected' && <CheckCircle2 className="w-6 h-6" />}
-                  {backendStatus === 'unavailable' && <XCircle className="w-6 h-6" />}
-                  {backendStatus === 'checking' && <Activity className="w-6 h-6 animate-pulse" />}
-                </div>
+          {/* Customer Profile Section */}
+          {customerLoading && <ProfileSkeleton />}
+          {!customerLoading && customer && (
+            <CustomerProfile customer={customer} />
+          )}
 
-                <div>
-                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400">
-                    FastAPI Service Status
-                  </div>
-                  <div className="text-lg font-bold text-slate-900">
-                    {backendStatus === 'connected' && (
-                      <span className="text-emerald-700 flex items-center">
-                        Backend Connected
-                      </span>
-                    )}
-                    {backendStatus === 'unavailable' && (
-                      <span className="text-rose-700 flex items-center">
-                        Backend Unavailable
-                      </span>
-                    )}
-                    {backendStatus === 'checking' && (
-                      <span className="text-amber-700 flex items-center">
-                        Checking Connection...
-                      </span>
-                    )}
-                  </div>
-                  {healthData && (
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Service: {healthData.service} | Version: {healthData.version}
-                    </p>
-                  )}
-                </div>
+          {/* Model Prediction Section */}
+          {customer && predictionLoading && <PredictionSkeleton />}
+          {customer && !predictionLoading && predictionError && (
+            <ErrorMessage type="prediction_error" customMessage={predictionError} />
+          )}
+          {customer && !predictionLoading && prediction && (
+            <PredictionCard
+              prediction={prediction}
+              currentCreditLimit={customer?.credit_history?.current_credit_limit}
+            />
+          )}
+
+          {/* Financial Trend Dashboard Section */}
+          {customer && trendsLoading && <FinancialTrendSkeleton />}
+          {customer && !trendsLoading && trendsError && (
+            <ErrorMessage type="financial_trends_error" customMessage={trendsError} />
+          )}
+          {customer && !trendsLoading && trendsData && (
+            <Suspense fallback={<FinancialTrendSkeleton />}>
+              <FinancialTrendDashboard trendsData={trendsData} />
+            </Suspense>
+          )}
+
+          {/* Explainability Section */}
+          {customer && explanationLoading && <ExplainabilitySkeleton />}
+          {customer && !explanationLoading && explanationError && (
+            <ErrorMessage type="explanation_error" customMessage={explanationError} />
+          )}
+          {customer && !explanationLoading && explanationData && (
+            <Suspense fallback={<ExplainabilitySkeleton />}>
+              <ExplainabilityDashboard explanationData={explanationData} />
+            </Suspense>
+          )}
+
+          {/* What-If Simulator Section */}
+          {customer && !customerLoading && (
+            <Suspense fallback={<div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6 text-sm text-slate-400 text-center">Loading simulator...</div>}>
+              <WhatIfSimulator customer={customer} />
+            </Suspense>
+          )}
+
+          {/* Employee Decision Panel */}
+          {customer && !customerLoading && (
+            <Suspense fallback={<div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-sm text-slate-400 text-center">Loading decision panel...</div>}>
+              <EmployeeDecisionPanel 
+                customer={customer} 
+                prediction={prediction} 
+              />
+            </Suspense>
+          )}
+
+          {/* Empty / Initial Welcome Banner if no search performed */}
+          {!customerLoading && !customer && !searchError && (
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center my-6">
+              <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
+                <Info className="w-6 h-6" />
               </div>
-
-              <div>
-                <button
-                  onClick={checkHealth}
-                  disabled={loading}
-                  className="inline-flex items-center justify-center px-4 py-2.5 border border-slate-300 shadow-sm text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors cursor-pointer disabled:opacity-60"
-                >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin text-blue-600' : 'text-slate-500'}`} />
-                  Check Backend
-                </button>
-              </div>
+              <h3 className="text-lg font-bold text-slate-900">
+                Welcome to Credit Recommendation Decision Support
+              </h3>
+              <p className="text-sm text-slate-500 mt-2 max-w-xl mx-auto leading-relaxed">
+                Enter a Customer ID above (such as <code className="font-mono text-blue-600 font-semibold bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">CUST00001</code>) to retrieve the customer's financial profile, generate a model-predicted credit limit recommendation, and analyze 6-month historical trends.
+              </p>
             </div>
-
-            {/* Diagnostic Information */}
-            <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/60">
-                <span className="text-xs font-medium text-slate-400 block mb-1">Target Base URL</span>
-                <code className="text-xs font-mono text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 block truncate">
-                  {import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'}
-                </code>
-              </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/60">
-                <span className="text-xs font-medium text-slate-400 block mb-1">Health Endpoint</span>
-                <code className="text-xs font-mono text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 block truncate">
-                  GET /health
-                </code>
-              </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/60">
-                <span className="text-xs font-medium text-slate-400 block mb-1">CORS & Security</span>
-                <span className="text-xs font-medium text-emerald-600 flex items-center mt-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Allowed (localhost:5173)
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+          )}
+        </main>
+      </div>
 
       {/* Enterprise Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
-          <div>
-            AI-Based Credit Limit Recommendation System &copy; 2026. All rights reserved.
+      <footer className="bg-white border-t border-slate-200 py-4 mt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+          <div className="flex items-center space-x-2">
+            <ShieldCheck className="w-4 h-4 text-slate-400" />
+            <span>AI-Based Credit Limit Recommendation System &copy; 2026. Internal Bank Employee System.</span>
           </div>
-          <div className="mt-2 sm:mt-0 font-mono">
-            FastAPI + React 19 + Vite + Tailwind CSS
+          <div className="font-mono text-[11px] text-slate-400">
+            Phase 5G Active | FastAPI + React 19 + Recharts + Vite
           </div>
         </div>
       </footer>
