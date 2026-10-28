@@ -17,11 +17,11 @@ export default function Badge({
 
   const variants = {
     navy:
-      'bg-[var(--color-navy-100)] text-[var(--color-navy-800)] border-[var(--color-navy-200)]',
+      'bg-[var(--color-forest-100)] text-[var(--color-forest-900)] border-[var(--color-forest-200)]',
     'outline-navy':
-      'bg-transparent text-[var(--color-navy-700)] border-[var(--color-navy-300)]',
+      'bg-transparent text-[var(--color-forest-800)] border-[var(--color-forest-300)]',
     teal:
-      'bg-[var(--color-teal-100)] text-[var(--color-teal-800)] border-[var(--color-teal-200)]',
+      'bg-[var(--color-olive-100)] text-[var(--color-olive-800)] border-[var(--color-olive-200)]',
     success:
       'bg-[var(--status-success-bg)] text-[var(--status-success)] border-[var(--status-success-border)]',
     warning:
@@ -29,7 +29,7 @@ export default function Badge({
     danger:
       'bg-[var(--status-danger-bg)] text-[var(--status-danger)] border-[var(--status-danger-border)]',
     neutral:
-      'bg-slate-100 text-slate-600 border-slate-200',
+      'bg-[var(--surface-card-muted)] text-[var(--text-secondary)] border-[var(--border-default)]',
   };
 
   const sizes = {
@@ -38,13 +38,13 @@ export default function Badge({
   };
 
   const dotColors = {
-    navy: 'bg-[var(--color-navy-500)]',
-    'outline-navy': 'bg-[var(--color-navy-500)]',
-    teal: 'bg-[var(--color-teal-500)]',
+    navy: 'bg-[var(--color-forest-dark)]',
+    'outline-navy': 'bg-[var(--color-forest-dark)]',
+    teal: 'bg-[var(--brand-secondary)]',
     success: 'bg-[var(--status-success)]',
     warning: 'bg-[var(--status-warning)]',
     danger: 'bg-[var(--status-danger)]',
-    neutral: 'bg-slate-400',
+    neutral: 'bg-[var(--color-blue-grey)]',
   };
 
   return (

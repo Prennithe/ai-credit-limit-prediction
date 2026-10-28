@@ -28,38 +28,38 @@ export default function Button({
     primary:
       'bg-[var(--brand-primary)] text-white border-[var(--brand-primary)] ' +
       'hover:bg-[var(--brand-primary-hover)] active:bg-[var(--brand-primary-active)] ' +
-      'focus-visible:ring-[var(--color-navy-400)] shadow-[var(--shadow-sm)]',
+      'focus-visible:ring-[var(--color-olive-400)] shadow-[var(--shadow-sm)]',
 
     teal:
       'bg-[var(--brand-secondary)] text-white border-[var(--brand-secondary)] ' +
-      'hover:bg-[var(--brand-secondary-hover)] active:bg-[var(--color-teal-700)] ' +
-      'focus-visible:ring-[var(--color-teal-400)] shadow-[var(--shadow-teal)]',
+      'hover:bg-[var(--brand-secondary-hover)] active:bg-[var(--color-olive-700)] ' +
+      'focus-visible:ring-[var(--color-olive-400)] shadow-[var(--shadow-olive)]',
 
     secondary:
-      'bg-[var(--color-navy-100)] text-[var(--color-navy-800)] border-[var(--color-navy-200)] ' +
-      'hover:bg-[var(--color-navy-200)] active:bg-[var(--color-navy-300)] ' +
-      'focus-visible:ring-[var(--color-navy-300)]',
+      'bg-[var(--color-olive-100)] text-[var(--color-forest-dark)] border-[var(--color-olive-200)] ' +
+      'hover:bg-[var(--color-olive-200)] active:bg-[var(--color-olive-300)] ' +
+      'focus-visible:ring-[var(--brand-secondary)]',
 
     outline:
-      'bg-transparent text-[var(--brand-primary)] border-[var(--color-navy-300)] ' +
-      'hover:bg-[var(--color-navy-50)] active:bg-[var(--color-navy-100)] ' +
-      'focus-visible:ring-[var(--color-navy-300)]',
+      'bg-transparent text-[var(--text-primary)] border-[var(--border-default)] ' +
+      'hover:bg-[rgba(123,138,65,0.08)] active:bg-[rgba(123,138,65,0.16)] ' +
+      'focus-visible:ring-[var(--brand-secondary)]',
 
     ghost:
       'bg-transparent text-[var(--text-secondary)] border-transparent ' +
-      'hover:bg-[var(--color-navy-50)] active:bg-[var(--color-navy-100)] ' +
-      'focus-visible:ring-[var(--color-navy-200)]',
+      'hover:bg-[rgba(123,138,65,0.08)] active:bg-[rgba(123,138,65,0.16)] ' +
+      'focus-visible:ring-[var(--brand-secondary)]',
 
     danger:
       'bg-[var(--status-danger)] text-white border-[var(--status-danger)] ' +
-      'hover:bg-red-700 active:bg-red-800 ' +
-      'focus-visible:ring-red-400 shadow-[var(--shadow-sm)]',
+      'hover:bg-[#482433] active:bg-[#381c28] ' +
+      'focus-visible:ring-[#8c4b67] shadow-[var(--shadow-sm)]',
   };
 
   const sizes = {
-    sm:  'px-3 py-1.5 text-xs gap-1.5',
-    md:  'px-5 py-2.5 text-sm gap-2',
-    lg:  'px-7 py-3.5 text-base gap-2.5',
+    sm:  'px-3 py-1.5 text-xs gap-1.5 min-h-[32px]',
+    md:  'px-5 py-2.5 text-sm gap-2 min-h-[40px]',
+    lg:  'px-7 py-3.5 text-base gap-2.5 min-h-[48px]',
   };
 
   return (
@@ -81,10 +81,10 @@ export default function Button({
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
       ) : (
-        leftIcon && <span className="flex-shrink-0">{leftIcon}</span>
+        leftIcon && <span className="flex-shrink-0 inline-flex items-center justify-center">{leftIcon}</span>
       )}
-      <span>{children}</span>
-      {!loading && rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+      {children}
+      {!loading && rightIcon && <span className="flex-shrink-0 inline-flex items-center justify-center">{rightIcon}</span>}
     </button>
   );
 }

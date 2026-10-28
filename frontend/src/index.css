@@ -25,24 +25,24 @@ body {
 
 /* ── Focus ring global reset ──────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--color-teal-500);
+  outline: 2px solid var(--color-olive-secondary);
   outline-offset: 2px;
 }
 
-/* ── Custom scrollbar (sidebar) ───────────────────────────────── */
+/* ── Custom scrollbar ─────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: var(--border-default);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-navy-400);
+  background: var(--color-blue-grey);
 }
 
 /* ── Utility: visually hidden but accessible ─────────────────── */
@@ -57,4 +57,3 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
-

@@ -132,90 +132,98 @@ export default function WhatIfSimulator({ customer }) {
   const hasChanges = Object.keys(overrides).length > 0;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+    <div className="bg-[var(--surface-card)] rounded-xl shadow-xs border border-[var(--border-default)] p-6 mb-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 border-b border-[var(--border-muted)] pb-4">
         <div className="flex items-center space-x-3">
-          <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600">
+          <div className="bg-[rgba(123,138,65,0.12)] p-2 rounded-lg text-[var(--brand-primary)] border border-[rgba(123,138,65,0.25)] flex-shrink-0">
             <Calculator className="w-5 h-5" />
           </div>
-          <h2 className="text-xl font-bold text-slate-800">What-If Credit Limit Simulator</h2>
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-[var(--text-primary)]">What-If Credit Limit Simulator</h2>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Interactive exploratory scenario analysis</p>
+          </div>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex items-center space-x-2.5">
           <button
             onClick={handleReset}
             disabled={isSimulating}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded transition-colors disabled:opacity-50"
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--surface-bg)] hover:bg-[rgba(183,198,214,0.25)] border border-[var(--border-default)] rounded-lg transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-3.5 h-3.5" />
             <span>Reset Changes</span>
           </button>
           <button
             onClick={handleSimulate}
             disabled={isSimulating || !hasChanges}
-            className="flex items-center space-x-1.5 px-4 py-1.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center space-x-1.5 px-4 py-1.5 text-xs sm:text-sm font-semibold text-white bg-[var(--brand-primary)] hover:bg-[var(--color-olive-600)] rounded-lg transition-colors shadow-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:ring-offset-1"
           >
             {isSimulating ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <Play className="w-4 h-4" />
+              <Play className="w-3.5 h-3.5" />
             )}
             <span>{isSimulating ? 'Running simulation...' : 'Run Simulation'}</span>
           </button>
         </div>
       </div>
 
-      <p className="text-sm text-slate-600 mb-6 max-w-3xl">
+      <p className="text-xs sm:text-sm text-[var(--text-secondary)] mb-6 max-w-3xl leading-relaxed">
         Temporarily adjust selected customer information to evaluate how the model prediction changes. 
         These changes are simulation-only and are not saved.
       </p>
 
       {/* Error Message */}
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-lg flex items-start space-x-3 mb-6">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <p className="text-sm font-medium">{error}</p>
+        <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger)] p-4 rounded-lg flex items-start space-x-3 mb-6">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--status-danger)]" />
+          <p className="text-xs sm:text-sm font-medium">{error}</p>
         </div>
       )}
 
       {/* Simulation Result */}
       {simulationResult && (
-        <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-6 mb-8">
-          <h3 className="text-lg font-bold text-slate-800 mb-4">Simulation Result</h3>
+        <div className="bg-[var(--surface-bg)] border border-[var(--border-default)] rounded-xl p-5 sm:p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)]">Simulation Result</h3>
+            <span className="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--surface-card)] px-2 py-0.5 rounded border border-[var(--border-default)]">
+              Scenario Output
+            </span>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <p className="text-sm text-slate-500 font-medium mb-1">Baseline Prediction</p>
-              <p className="text-2xl font-bold text-slate-800">
+            <div className="bg-[var(--surface-card)] p-4 rounded-lg shadow-xs border border-[var(--border-default)]">
+              <p className="text-xs text-[var(--text-secondary)] font-medium mb-1">Baseline Prediction</p>
+              <p className="text-xl sm:text-2xl font-bold font-mono text-[var(--text-primary)] tabular-nums">
                 {formatCurrency(simulationResult.baseline_prediction)}
               </p>
             </div>
             
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-indigo-200 ring-1 ring-indigo-50">
-              <p className="text-sm text-slate-500 font-medium mb-1">Simulated Prediction</p>
-              <p className="text-2xl font-bold text-indigo-700">
+            <div className="bg-[var(--surface-card)] p-4 rounded-lg shadow-xs border border-[var(--brand-primary)] ring-1 ring-[rgba(123,138,65,0.25)]">
+              <p className="text-xs text-[var(--text-secondary)] font-medium mb-1">Simulated Prediction</p>
+              <p className="text-xl sm:text-2xl font-bold font-mono text-[var(--brand-primary)] tabular-nums">
                 {formatCurrency(simulationResult.simulated_prediction)}
               </p>
             </div>
             
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-              <p className="text-sm text-slate-500 font-medium mb-1">Change</p>
+            <div className="bg-[var(--surface-card)] p-4 rounded-lg shadow-xs border border-[var(--border-default)]">
+              <p className="text-xs text-[var(--text-secondary)] font-medium mb-1">Change vs Baseline</p>
               <div className="flex items-center space-x-2">
                 {simulationResult.prediction_change > 0 ? (
-                  <TrendingUp className="w-5 h-5 text-emerald-600" />
+                  <TrendingUp className="w-5 h-5 text-[var(--status-success)] flex-shrink-0" />
                 ) : simulationResult.prediction_change < 0 ? (
-                  <TrendingDown className="w-5 h-5 text-rose-600" />
+                  <TrendingDown className="w-5 h-5 text-[var(--status-danger)] flex-shrink-0" />
                 ) : (
-                  <Minus className="w-5 h-5 text-slate-400" />
+                  <Minus className="w-5 h-5 text-[var(--text-muted)] flex-shrink-0" />
                 )}
                 <div>
-                  <p className={`text-xl font-bold ${
-                    simulationResult.prediction_change > 0 ? 'text-emerald-600' 
-                    : simulationResult.prediction_change < 0 ? 'text-rose-600' : 'text-slate-600'
+                  <p className={`text-lg sm:text-xl font-bold font-mono tabular-nums ${
+                    simulationResult.prediction_change > 0 ? 'text-[var(--status-success)]'
+                    : simulationResult.prediction_change < 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-secondary)]'
                   }`}>
                     {formatDifference(simulationResult.prediction_change)}
                   </p>
-                  <p className="text-xs font-medium text-slate-500">
+                  <p className="text-[11px] font-medium text-[var(--text-muted)] font-mono">
                     {simulationResult.prediction_change > 0 ? '+' : ''}{simulationResult.prediction_change_percentage}%
                   </p>
                 </div>
@@ -224,17 +232,17 @@ export default function WhatIfSimulator({ customer }) {
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-slate-700 mb-2">Applied Changes:</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-2.5">Applied Overrides:</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {Object.entries(simulationResult.applied_changes).map(([field, change]) => (
-                <div key={field} className="bg-white p-3 rounded shadow-sm border border-slate-100 flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-600">{LABEL_MAP[field] || field}</span>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className="text-slate-400 line-through">
+                <div key={field} className="bg-[var(--surface-card)] p-3 rounded-lg shadow-2xs border border-[var(--border-default)] flex items-center justify-between">
+                  <span className="text-xs font-medium text-[var(--text-secondary)]">{LABEL_MAP[field] || field}</span>
+                  <div className="flex items-center space-x-2 text-xs font-mono">
+                    <span className="text-[var(--text-muted)] line-through">
                       {field.includes('amt') ? formatCurrency(change.original) : change.original}
                     </span>
-                    <ArrowRight className="w-3 h-3 text-slate-400" />
-                    <span className="font-semibold text-indigo-600">
+                    <ArrowRight className="w-3 h-3 text-[var(--text-muted)]" />
+                    <span className="font-bold text-[var(--brand-primary)]">
                       {field.includes('amt') ? formatCurrency(change.simulated) : change.simulated}
                     </span>
                   </div>
@@ -250,36 +258,36 @@ export default function WhatIfSimulator({ customer }) {
         
         {/* Section A: Profile */}
         <section>
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
+          <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-4 pb-2 border-b border-[var(--border-muted)]">
             A — Customer Profile
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">{LABEL_MAP.age}</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{LABEL_MAP.age}</label>
               <input 
                 type="number" min="18" max="100"
                 value={editedValues.age ?? ''}
                 onChange={e => handleChange('age', e.target.value)}
-                className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues.age != originalValues.age ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] font-mono transition-colors ${editedValues.age != originalValues.age ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">{LABEL_MAP.sex}</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{LABEL_MAP.sex}</label>
               <select
                 value={editedValues.sex ?? ''}
                 onChange={e => handleChange('sex', e.target.value)}
-                className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues.sex != originalValues.sex ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] transition-colors cursor-pointer ${editedValues.sex != originalValues.sex ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
               >
                 <option value="1">Male</option>
                 <option value="2">Female</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">{LABEL_MAP.education}</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{LABEL_MAP.education}</label>
               <select
                 value={editedValues.education ?? ''}
                 onChange={e => handleChange('education', e.target.value)}
-                className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues.education != originalValues.education ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] transition-colors cursor-pointer ${editedValues.education != originalValues.education ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
               >
                 <option value="1">Graduate School</option>
                 <option value="2">University</option>
@@ -288,11 +296,11 @@ export default function WhatIfSimulator({ customer }) {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">{LABEL_MAP.marriage}</label>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">{LABEL_MAP.marriage}</label>
               <select
                 value={editedValues.marriage ?? ''}
                 onChange={e => handleChange('marriage', e.target.value)}
-                className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues.marriage != originalValues.marriage ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] transition-colors cursor-pointer ${editedValues.marriage != originalValues.marriage ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
               >
                 <option value="1">Married</option>
                 <option value="2">Single</option>
@@ -304,25 +312,25 @@ export default function WhatIfSimulator({ customer }) {
 
         {/* Section B: Repayment */}
         <section>
-          <div className="flex items-baseline space-x-2 mb-4 pb-2 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+          <div className="flex items-baseline space-x-2 mb-4 pb-2 border-b border-[var(--border-muted)]">
+            <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
               B — Repayment Behavior
             </h3>
-            <span className="text-xs text-slate-500 italic">(Historical status codes)</span>
+            <span className="text-[11px] text-[var(--text-muted)] italic">(Historical status codes)</span>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
             {[0, 2, 3, 4, 5, 6].map(i => {
               const key = `pay_${i}`;
               return (
                 <div key={key}>
-                  <label className="block text-xs font-medium text-slate-600 mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title={LABEL_MAP[key]}>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5 whitespace-nowrap overflow-hidden text-ellipsis" title={LABEL_MAP[key]}>
                     {LABEL_MAP[key]}
                   </label>
                   <input 
                     type="number"
                     value={editedValues[key] ?? ''}
                     onChange={e => handleChange(key, e.target.value)}
-                    className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues[key] != originalValues[key] ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] font-mono transition-colors ${editedValues[key] != originalValues[key] ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
                   />
                 </div>
               );
@@ -332,7 +340,7 @@ export default function WhatIfSimulator({ customer }) {
 
         {/* Section C: Billing */}
         <section>
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
+          <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-4 pb-2 border-b border-[var(--border-muted)]">
             C — Billing History
           </h3>
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
@@ -340,14 +348,14 @@ export default function WhatIfSimulator({ customer }) {
               const key = `bill_amt_${i}`;
               return (
                 <div key={key}>
-                  <label className="block text-xs font-medium text-slate-600 mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title={LABEL_MAP[key]}>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5 whitespace-nowrap overflow-hidden text-ellipsis" title={LABEL_MAP[key]}>
                     {LABEL_MAP[key]}
                   </label>
                   <input 
                     type="number" min="0" step="100"
                     value={editedValues[key] ?? ''}
                     onChange={e => handleChange(key, e.target.value)}
-                    className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues[key] != originalValues[key] ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] font-mono transition-colors ${editedValues[key] != originalValues[key] ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
                   />
                 </div>
               );
@@ -357,7 +365,7 @@ export default function WhatIfSimulator({ customer }) {
 
         {/* Section D: Payment */}
         <section>
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
+          <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-4 pb-2 border-b border-[var(--border-muted)]">
             D — Payment History
           </h3>
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
@@ -365,14 +373,14 @@ export default function WhatIfSimulator({ customer }) {
               const key = `pay_amt_${i}`;
               return (
                 <div key={key}>
-                  <label className="block text-xs font-medium text-slate-600 mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title={LABEL_MAP[key]}>
+                  <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5 whitespace-nowrap overflow-hidden text-ellipsis" title={LABEL_MAP[key]}>
                     {LABEL_MAP[key]}
                   </label>
                   <input 
                     type="number" min="0" step="100"
                     value={editedValues[key] ?? ''}
                     onChange={e => handleChange(key, e.target.value)}
-                    className={`w-full px-3 py-2 text-sm border rounded focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 ${editedValues[key] != originalValues[key] ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}
+                    className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] font-mono transition-colors ${editedValues[key] != originalValues[key] ? 'bg-[rgba(123,138,65,0.12)] border-[var(--brand-primary)]' : 'bg-[var(--surface-bg)] border-[var(--border-default)]'}`}
                   />
                 </div>
               );
@@ -382,8 +390,8 @@ export default function WhatIfSimulator({ customer }) {
 
       </div>
 
-      <div className="mt-8 pt-4 border-t border-slate-100 text-center">
-        <p className="text-xs text-slate-500 italic max-w-2xl mx-auto">
+      <div className="mt-8 pt-4 border-t border-[var(--border-muted)] text-center">
+        <p className="text-xs text-[var(--text-muted)] italic max-w-2xl mx-auto leading-relaxed">
           Simulation only — changes are temporary and do not modify the customer's database record. 
           The model output is decision-support information. Final credit decisions remain with the authorized bank employee.
         </p>

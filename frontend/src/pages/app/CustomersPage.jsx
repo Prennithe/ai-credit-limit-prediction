@@ -48,27 +48,39 @@ export default function CustomersPage() {
           <CustomerProfile customer={customer} />
 
           {/* Quick jump to next steps in review process */}
-          <div className="p-4 rounded-xl bg-white border border-[var(--border-default)] shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <div className="
+            p-4 sm:p-5 rounded-[var(--radius-xl)]
+            bg-[var(--surface-card)]
+            border border-[var(--border-default)]
+            shadow-[var(--shadow-sm)]
+            flex flex-wrap items-center justify-between gap-3
+          ">
             <div>
-              <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                Customer Profile Loaded
+              <p className="text-[10px] font-bold text-[var(--brand-secondary)] uppercase tracking-widest mb-0.5">
+                Profile Loaded
               </p>
-              <p className="text-sm text-[var(--text-primary)]">
-                Next step: review recommended model credit limit and risk drivers.
+              <p className="text-sm text-[var(--text-primary)] font-medium">
+                Review the recommended credit limit and risk drivers.
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
               <Link to="/app/prediction">
-                <Button variant="primary" size="sm" className="inline-flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4" />
-                  <span>View Prediction</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<Sparkles className="w-4 h-4 flex-shrink-0" />}
+                  rightIcon={<ArrowRight className="w-3.5 h-3.5 flex-shrink-0" />}
+                >
+                  View Prediction
                 </Button>
               </Link>
               <Link to="/app/financial-trends">
-                <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5">
-                  <TrendingUp className="w-4 h-4" />
-                  <span>Financial Trends</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<TrendingUp className="w-4 h-4 flex-shrink-0" />}
+                >
+                  Financial Trends
                 </Button>
               </Link>
             </div>

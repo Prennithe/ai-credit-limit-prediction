@@ -209,7 +209,7 @@ function WaterfallXAxisTick({ x, y, payload, index, entries }) {
         x={0}
         y={0}
         textAnchor="middle"
-        fill="#475569"
+        fill="var(--text-secondary)"
         fontSize={11}
         fontFamily="inherit"
         fontWeight={500}
@@ -417,26 +417,26 @@ function WaterfallTooltip({ active, payload, customer }) {
   if (!entry) return null;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-xl p-3 max-w-[280px] text-xs">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5 mb-2">
-        <p className="font-bold text-slate-900 text-xs leading-snug">
+    <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-lg shadow-xl p-3 max-w-[280px] text-xs">
+      <div className="flex items-center justify-between gap-2 border-b border-[var(--border-muted)] pb-1.5 mb-2">
+        <p className="font-bold text-[var(--text-primary)] text-xs leading-snug">
           {entry.label}
         </p>
         {entry.feature && entry.feature !== '__other__' && (
-          <span className="text-[10px] font-mono text-slate-400">
+          <span className="text-[10px] font-mono text-[var(--text-muted)]">
             {entry.chartLabel}
           </span>
         )}
       </div>
 
       {entry.isBaseline && (
-        <p className="text-slate-600 leading-relaxed text-[11px]">
+        <p className="text-[var(--text-secondary)] leading-relaxed text-[11px]">
           Global average prediction across training data. Every customer evaluation begins at this baseline.
         </p>
       )}
 
       {entry.isFinal && (
-        <p className="text-slate-600 leading-relaxed text-[11px]">
+        <p className="text-[var(--text-secondary)] leading-relaxed text-[11px]">
           Final recommended credit limit for this customer profile after all feature contributions.
         </p>
       )}
@@ -444,23 +444,23 @@ function WaterfallTooltip({ active, payload, customer }) {
       {!entry.isBaseline && !entry.isFinal && entry.shap_value != null && (
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-slate-500 text-[11px]">Contribution:</span>
+            <span className="text-[var(--text-secondary)] text-[11px]">Contribution:</span>
             <span className={`text-xs font-bold font-mono ${
-              entry.shap_value >= 0 ? 'text-[#5C6D2E]' : 'text-[#C47265]'
+              entry.shap_value >= 0 ? 'text-[var(--status-success)]' : 'text-[var(--status-danger)]'
             }`}>
               {entry.shap_value >= 0 ? '+' : ''}
               {formatCurrency(entry.shap_value)}
             </span>
           </div>
-          <p className="text-slate-500 text-[11px]">
+          <p className="text-[var(--text-secondary)] text-[11px]">
             {entry.shap_value >= 0
               ? 'Pushed recommended limit higher.'
               : 'Pulled recommended limit lower.'}
           </p>
           {entry.feature && customer && entry.feature !== '__other__' && (
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px]">
-              <span className="text-slate-500">Customer value:</span>
-              <span className="font-semibold text-slate-800 font-mono">
+            <div className="flex items-center justify-between pt-1 border-t border-[var(--border-muted)] text-[11px]">
+              <span className="text-[var(--text-secondary)]">Customer value:</span>
+              <span className="font-semibold text-[var(--text-primary)] font-mono">
                 {originalValue(entry.feature, customer) ?? '—'}
               </span>
             </div>
@@ -468,9 +468,9 @@ function WaterfallTooltip({ active, payload, customer }) {
         </div>
       )}
 
-      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between font-mono text-[11px]">
-        <span className="text-slate-500">Cumulative Total:</span>
-        <span className="font-bold text-slate-900">{formatCurrency(entry.total)}</span>
+      <div className="mt-2.5 pt-2 border-t border-[var(--border-muted)] flex items-center justify-between font-mono text-[11px]">
+        <span className="text-[var(--text-secondary)]">Cumulative Total:</span>
+        <span className="font-bold text-[var(--text-primary)]">{formatCurrency(entry.total)}</span>
       </div>
     </div>
   );
@@ -496,11 +496,11 @@ function LegacyBarChart({ features }) {
         layout="vertical"
         margin={{ top: 16, right: 24, left: 16, bottom: 16 }}
       >
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-muted)" />
         <XAxis
           type="number"
           tickFormatter={(v) => formatCurrency(v)}
-          stroke="#94a3b8"
+          stroke="var(--border-muted)"
           fontSize={11}
           tick={{ fontFamily: 'var(--font-mono)' }}
         />
@@ -508,7 +508,7 @@ function LegacyBarChart({ features }) {
           type="category"
           dataKey="label"
           width={180}
-          tick={{ fill: '#475569', fontSize: 11 }}
+          tick={{ fill: 'var(--text-secondary)', fontSize: 11 }}
         />
         <Tooltip
           formatter={(v) => [
@@ -516,7 +516,7 @@ function LegacyBarChart({ features }) {
             'SHAP Contribution',
           ]}
         />
-        <ReferenceLine x={0} stroke="#cbd5e1" />
+        <ReferenceLine x={0} stroke="var(--border-default)" />
         <Bar dataKey="shap_value" radius={[0, 4, 4, 0]}>
           {chartData.map((entry, i) => (
             <Cell
@@ -705,62 +705,62 @@ export default function ExplainabilityDashboard({ explanationData }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
         {/* Historical Credit Limit */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
             Historical Credit Limit
           </p>
-          <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tabular-nums tracking-tight my-1.5">
+          <p className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] font-mono tabular-nums tracking-tight my-1.5">
             {historicalLimit != null ? formatCurrency(historicalLimit) : '—'}
           </p>
-          <p className="text-xs text-slate-400">Bank-assigned limit on record</p>
+          <p className="text-xs text-[var(--text-muted)]">Bank-assigned limit on record</p>
         </div>
 
         {/* AI Predicted Limit */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs text-white">
+        <div className="bg-[var(--color-slate-800)] border border-[rgba(116,141,164,0.35)] rounded-xl p-5 shadow-xs text-white">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-400">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-olive-300)]">
               AI Predicted Limit
             </p>
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold font-mono bg-teal-950 text-teal-300 border border-teal-800/80">
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold font-mono bg-[rgba(123,138,65,0.2)] text-[var(--color-olive-300)] border border-[rgba(123,138,65,0.4)]">
               XGBoost
             </span>
           </div>
           <p className="text-2xl sm:text-3xl font-extrabold text-white font-mono tabular-nums tracking-tight my-1.5">
             {predictedLimit != null ? formatCurrency(predictedLimit) : '—'}
           </p>
-          <p className="text-xs text-slate-300">Decision-support recommendation</p>
+          <p className="text-xs text-[var(--border-default)]">Decision-support recommendation</p>
         </div>
 
         {/* Difference vs Historical */}
         {difference != null ? (
           <div className={`rounded-xl p-5 shadow-xs border ${
             difference > 0
-              ? 'bg-emerald-50/70 border-emerald-200'
+              ? 'bg-[var(--status-success-bg)] border-[var(--status-success-border)]'
               : difference < 0
-              ? 'bg-rose-50/70 border-rose-200'
-              : 'bg-slate-50 border-slate-200'
+              ? 'bg-[var(--status-danger-bg)] border-[var(--status-danger-border)]'
+              : 'bg-[var(--surface-card)] border-[var(--border-default)]'
           }`}>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Difference vs Historical
             </p>
             <div className="flex items-center gap-1.5 my-1.5">
               {difference > 0 ? (
-                <TrendingUp className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <TrendingUp className="w-5 h-5 text-[var(--status-success)] flex-shrink-0" />
               ) : difference < 0 ? (
-                <TrendingDown className="w-5 h-5 text-rose-600 flex-shrink-0" />
+                <TrendingDown className="w-5 h-5 text-[var(--status-danger)] flex-shrink-0" />
               ) : (
-                <Minus className="w-5 h-5 text-slate-500 flex-shrink-0" />
+                <Minus className="w-5 h-5 text-[var(--text-secondary)] flex-shrink-0" />
               )}
               <p className={`text-2xl sm:text-3xl font-extrabold font-mono tabular-nums tracking-tight ${
-                difference > 0 ? 'text-emerald-700'
-                : difference < 0 ? 'text-rose-700'
-                : 'text-slate-700'
+                difference > 0 ? 'text-[var(--status-success)]'
+                : difference < 0 ? 'text-[var(--status-danger)]'
+                : 'text-[var(--text-primary)]'
               }`}>
                 {difference > 0 ? '+' : ''}
                 {formatCurrency(difference)}
               </p>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[var(--text-secondary)]">
               {difference > 0
                 ? 'Model suggests a credit limit increase'
                 : difference < 0
@@ -769,31 +769,31 @@ export default function ExplainabilityDashboard({ explanationData }) {
             </p>
           </div>
         ) : (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 shadow-xs">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-xl p-5 shadow-xs">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
               Difference vs Historical
             </p>
-            <p className="text-2xl font-extrabold text-slate-300 font-mono my-1.5">—</p>
-            <p className="text-xs text-slate-400">Historical limit unavailable</p>
+            <p className="text-2xl font-extrabold text-[var(--text-muted)] font-mono my-1.5">—</p>
+            <p className="text-xs text-[var(--text-muted)]">Historical limit unavailable</p>
           </div>
         )}
       </div>
 
       {/* ══ PANEL B — Refined Scannable Driver Section ═══════════════ */}
       <div
-        className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-xs"
+        className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-xl p-5 sm:p-6 shadow-xs"
         aria-label="Key factor influences on AI prediction"
       >
         {/* Section Header */}
-        <div className="flex items-center gap-2.5 mb-4 border-b border-slate-100 pb-3">
-          <div className="bg-teal-50 p-2 rounded-lg text-teal-700 border border-teal-100">
+        <div className="flex items-center gap-2.5 mb-4 border-b border-[var(--border-muted)] pb-3">
+          <div className="bg-[rgba(123,138,65,0.12)] p-2 rounded-lg text-[var(--brand-primary)] border border-[rgba(123,138,65,0.25)] flex-shrink-0">
             <MessageSquare className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+            <h2 className="text-sm sm:text-base font-bold text-[var(--text-primary)] tracking-tight">
               Why This Predicted Limit?
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5 leading-relaxed">
               The model's recommendation is influenced by this customer's recorded financial details and payment behavior.
               Individual features push the predicted limit above or below the baseline model average.
             </p>
@@ -805,14 +805,14 @@ export default function ExplainabilityDashboard({ explanationData }) {
 
           {/* Positive Influences Column */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-muted)]">
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-                <h3 className="font-semibold text-xs text-slate-800 uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-[var(--status-success)] inline-block" />
+                <h3 className="font-semibold text-xs text-[var(--text-primary)] uppercase tracking-wider">
                   Positive Influences
                 </h3>
               </div>
-              <span className="text-[11px] font-semibold font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/80">
+              <span className="text-[11px] font-semibold font-mono text-[var(--status-success)] bg-[var(--status-success-bg)] px-2 py-0.5 rounded border border-[var(--status-success-border)]">
                 {topPositive.length} top / {positiveCount} total
               </span>
             </div>
@@ -822,32 +822,32 @@ export default function ExplainabilityDashboard({ explanationData }) {
                 {topPositive.map(f => (
                   <div
                     key={f.feature}
-                    className="px-3.5 py-2.5 rounded-lg border border-slate-200/90 bg-white hover:border-slate-300 transition-colors flex items-center justify-between gap-3 shadow-2xs min-h-[58px]"
+                    className="px-3.5 py-2.5 rounded-lg border border-[var(--border-default)] bg-[var(--surface-bg)] hover:border-[var(--color-blue-grey)] transition-colors flex items-center justify-between gap-3 shadow-2xs min-h-[58px]"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-xs text-slate-900 truncate">
+                        <span className="font-semibold text-xs text-[var(--text-primary)] truncate">
                           {f.label}
                         </span>
                         {f.origVal && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-mono text-slate-600 bg-slate-100 border border-slate-200/80 flex-shrink-0">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-mono text-[var(--text-secondary)] bg-[var(--surface-card)] border border-[var(--border-default)] flex-shrink-0">
                             {f.origVal}
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      <p className="text-[11px] text-[var(--text-muted)] truncate mt-0.5">
                         {f.shortImpact}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 font-mono font-bold text-xs text-emerald-700 flex-shrink-0 bg-emerald-50 px-2 py-1 rounded border border-emerald-200/80 tabular-nums">
-                      <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                    <div className="flex items-center gap-1 font-mono font-bold text-xs text-[var(--status-success)] flex-shrink-0 bg-[var(--status-success-bg)] px-2 py-1 rounded border border-[var(--status-success-border)] tabular-nums">
+                      <ArrowUpRight className="w-3.5 h-3.5 text-[var(--status-success)] flex-shrink-0" />
                       <span>+{formatCurrency(f.shap_value)}</span>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-400 italic py-3 text-center">
+              <p className="text-xs text-[var(--text-muted)] italic py-3 text-center">
                 No positive feature contributions for this customer profile.
               </p>
             )}
@@ -855,14 +855,14 @@ export default function ExplainabilityDashboard({ explanationData }) {
 
           {/* Negative Influences Column */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-muted)]">
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
-                <h3 className="font-semibold text-xs text-slate-800 uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-[var(--status-danger)] inline-block" />
+                <h3 className="font-semibold text-xs text-[var(--text-primary)] uppercase tracking-wider">
                   Negative Influences
                 </h3>
               </div>
-              <span className="text-[11px] font-semibold font-mono text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200/80">
+              <span className="text-[11px] font-semibold font-mono text-[var(--status-danger)] bg-[var(--status-danger-bg)] px-2 py-0.5 rounded border border-[var(--status-danger-border)]">
                 {topNegative.length} top / {negativeCount} total
               </span>
             </div>
@@ -872,32 +872,32 @@ export default function ExplainabilityDashboard({ explanationData }) {
                 {topNegative.map(f => (
                   <div
                     key={f.feature}
-                    className="px-3.5 py-2.5 rounded-lg border border-slate-200/90 bg-white hover:border-slate-300 transition-colors flex items-center justify-between gap-3 shadow-2xs min-h-[58px]"
+                    className="px-3.5 py-2.5 rounded-lg border border-[var(--border-default)] bg-[var(--surface-bg)] hover:border-[var(--color-blue-grey)] transition-colors flex items-center justify-between gap-3 shadow-2xs min-h-[58px]"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-xs text-slate-900 truncate">
+                        <span className="font-semibold text-xs text-[var(--text-primary)] truncate">
                           {f.label}
                         </span>
                         {f.origVal && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-mono text-slate-600 bg-slate-100 border border-slate-200/80 flex-shrink-0">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-mono text-[var(--text-secondary)] bg-[var(--surface-card)] border border-[var(--border-default)] flex-shrink-0">
                             {f.origVal}
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      <p className="text-[11px] text-[var(--text-muted)] truncate mt-0.5">
                         {f.shortImpact}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 font-mono font-bold text-xs text-rose-700 flex-shrink-0 bg-rose-50 px-2 py-1 rounded border border-rose-200/80 tabular-nums">
-                      <ArrowDownRight className="w-3.5 h-3.5 text-rose-600 flex-shrink-0" />
+                    <div className="flex items-center gap-1 font-mono font-bold text-xs text-[var(--status-danger)] flex-shrink-0 bg-[var(--status-danger-bg)] px-2 py-1 rounded border border-[var(--status-danger-border)] tabular-nums">
+                      <ArrowDownRight className="w-3.5 h-3.5 text-[var(--status-danger)] flex-shrink-0" />
                       <span>{formatCurrency(f.shap_value)}</span>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-400 italic py-3 text-center">
+              <p className="text-xs text-[var(--text-muted)] italic py-3 text-center">
                 No negative feature contributions for this customer profile.
               </p>
             )}
@@ -905,40 +905,40 @@ export default function ExplainabilityDashboard({ explanationData }) {
         </div>
 
         {/* Simplified Summary Footer */}
-        <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-500">
+        <div className="mt-4 pt-3 border-t border-[var(--border-muted)] flex flex-wrap items-center justify-between gap-2.5 text-xs text-[var(--text-secondary)]">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-medium text-slate-600">Summary:</span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-medium border border-slate-200">
+            <span className="font-medium text-[var(--text-primary)]">Summary:</span>
+            <span className="inline-flex items-center px-2 py-0.5 rounded bg-[var(--surface-bg)] text-[var(--text-secondary)] font-mono text-[11px] font-medium border border-[var(--border-default)]">
               {totalFeatures} features evaluated
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-mono text-[11px] font-semibold border border-emerald-200">
-              <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--status-success-bg)] text-[var(--status-success)] font-mono text-[11px] font-semibold border border-[var(--status-success-border)]">
+              <ArrowUpRight className="w-3 h-3 text-[var(--status-success)]" />
               {positiveCount} increased prediction
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-50 text-rose-800 font-mono text-[11px] font-semibold border border-rose-200">
-              <ArrowDownRight className="w-3 h-3 text-rose-600" />
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--status-danger-bg)] text-[var(--status-danger)] font-mono text-[11px] font-semibold border border-[var(--status-danger-border)]">
+              <ArrowDownRight className="w-3 h-3 text-[var(--status-danger)]" />
               {negativeCount} decreased prediction
             </span>
           </div>
 
-          <div className="font-mono text-[11px] text-slate-500">
-            Baseline <span className="font-semibold text-slate-700">{formatCurrency(baseValue)}</span> → Prediction <span className="font-bold text-slate-900">{formatCurrency(predictedLimit)}</span>
+          <div className="font-mono text-[11px] text-[var(--text-secondary)]">
+            Baseline <span className="font-semibold text-[var(--text-primary)]">{formatCurrency(baseValue)}</span> → Prediction <span className="font-bold text-[var(--text-primary)]">{formatCurrency(predictedLimit)}</span>
           </div>
         </div>
       </div>
 
       {/* ══ PANEL C — Waterfall Chart ════════════════════════════════ */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-xs">
+      <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-xl p-5 sm:p-6 shadow-xs">
         {/* Header */}
         <div className="flex items-center gap-2.5 mb-2">
-          <div className="bg-teal-50 p-2 rounded-lg text-teal-700 border border-teal-100">
+          <div className="bg-[rgba(123,138,65,0.12)] p-2 rounded-lg text-[var(--brand-primary)] border border-[rgba(123,138,65,0.25)] flex-shrink-0">
             <Lightbulb className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+            <h2 className="text-sm sm:text-base font-bold text-[var(--text-primary)] tracking-tight">
               SHAP Waterfall — Step-by-Step Limit Attribution
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[var(--text-secondary)]">
               Incremental adjustments from model baseline average to final recommended credit limit
             </p>
           </div>
@@ -946,25 +946,25 @@ export default function ExplainabilityDashboard({ explanationData }) {
 
         {/* Context banner */}
         {baseValue != null && (
-          <div className="mt-3 mb-3.5 rounded-lg bg-slate-50 border border-slate-200/80 px-3.5 py-2 text-xs text-slate-700 leading-relaxed flex items-center justify-between flex-wrap gap-2">
+          <div className="mt-3 mb-3.5 rounded-lg bg-[var(--surface-bg)] border border-[var(--border-default)] px-3.5 py-2 text-xs text-[var(--text-secondary)] leading-relaxed flex items-center justify-between flex-wrap gap-2">
             <div>
               Starting from the baseline average of{' '}
-              <span className="font-bold font-mono text-slate-900">{formatCurrency(baseValue)}</span>
+              <span className="font-bold font-mono text-[var(--text-primary)]">{formatCurrency(baseValue)}</span>
               {predictedLimit != null && (
                 <>
                   {' '}→ feature attributions shifted the recommendation to{' '}
-                  <span className="font-bold font-mono text-slate-900">{formatCurrency(predictedLimit)}</span>.
+                  <span className="font-bold font-mono text-[var(--text-primary)]">{formatCurrency(predictedLimit)}</span>.
                 </>
               )}
             </div>
-            <span className="font-medium text-slate-500 font-mono text-[11px]">
+            <span className="font-medium text-[var(--text-muted)] font-mono text-[11px]">
               Sage = Raised · Rose = Lowered
             </span>
           </div>
         )}
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mb-3 text-xs text-slate-600 font-medium">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 mb-3 text-xs text-[var(--text-secondary)] font-medium">
           {[
             { color: WFCOLOR.baseline,   label: 'Baseline' },
             { color: WFCOLOR.positive,   label: 'Raised (+)' },
@@ -998,25 +998,25 @@ export default function ExplainabilityDashboard({ explanationData }) {
                   <CartesianGrid
                     strokeDasharray="2 4"
                     vertical={false}
-                    stroke="#f1f5f9"
+                    stroke="var(--border-muted)"
                   />
                   <XAxis
                     dataKey="id"
                     interval={0}
                     height={52}
                     tickLine={false}
-                    axisLine={{ stroke: '#cbd5e1' }}
+                    axisLine={{ stroke: 'var(--border-default)' }}
                     tick={<WaterfallXAxisTick entries={waterfallEntries} />}
                   />
                   <YAxis
                     tickFormatter={(v) => formatCurrency(v)}
-                    tick={{ fill: '#64748b', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+                    tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
                     domain={yDomain}
                     width={88}
                   />
                   <Tooltip
                     content={<WaterfallTooltip customer={customer} />}
-                    cursor={{ fill: 'rgba(116, 141, 164, 0.08)' }}
+                    cursor={{ fill: 'rgba(116, 141, 164, 0.12)' }}
                   />
                   <Bar
                     dataKey="invisible"
@@ -1051,41 +1051,41 @@ export default function ExplainabilityDashboard({ explanationData }) {
       </div>
 
       {/* ══ PANEL D — Feature Contribution Table with Controls ═════ */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
+      <div className="bg-[var(--surface-card)] border border-[var(--border-default)] rounded-xl shadow-xs overflow-hidden">
 
         {/* Table Title Bar */}
-        <div className="px-5 py-4 border-b border-slate-100 flex items-start gap-2.5">
-          <div className="bg-teal-50 p-2 rounded-lg text-teal-700 border border-teal-100 flex-shrink-0">
+        <div className="px-5 py-4 border-b border-[var(--border-muted)] flex items-start gap-2.5">
+          <div className="bg-[rgba(123,138,65,0.12)] p-2 rounded-lg text-[var(--brand-primary)] border border-[rgba(123,138,65,0.25)] flex-shrink-0">
             <Info className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-tight">
+            <h3 className="font-bold text-[var(--text-primary)] text-sm sm:text-base leading-tight">
               Feature Contribution Breakdown
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Granular breakdown of all features influencing this recommendation
             </p>
           </div>
         </div>
 
         {/* Table Controls (Search, Sort, Row Limits) */}
-        <div className="px-5 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+        <div className="px-5 py-3 bg-[var(--surface-bg)] border-b border-[var(--border-default)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
 
           {/* Search by feature name */}
           <div className="relative flex-1 max-w-sm">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               placeholder="Search features (e.g. Age, Balance, PAY_0)..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-7 py-1.5 text-xs bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-slate-800 placeholder-slate-400"
+              className="w-full pl-8 pr-7 py-1.5 text-xs bg-[var(--surface-card)] border border-[var(--border-default)] rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] placeholder-[var(--text-muted)]"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] text-xs font-bold cursor-pointer"
                 title="Clear filter"
               >
                 ×
@@ -1096,13 +1096,13 @@ export default function ExplainabilityDashboard({ explanationData }) {
           <div className="flex items-center gap-2.5 self-end sm:self-auto flex-wrap">
 
             {/* Sort Selector */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <SlidersHorizontal className="w-3 h-3 text-slate-400" />
+            <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+              <SlidersHorizontal className="w-3 h-3 text-[var(--text-muted)]" />
               <span className="font-medium">Sort:</span>
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
-                className="text-xs bg-white border border-slate-300 rounded-md px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 cursor-pointer"
+                className="text-xs bg-[var(--surface-card)] border border-[var(--border-default)] rounded-md px-2 py-1.5 text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] cursor-pointer"
               >
                 <option value="abs_desc">Absolute Impact (High to Low)</option>
                 <option value="shap_desc">Positive Impact First (+)</option>
@@ -1112,7 +1112,7 @@ export default function ExplainabilityDashboard({ explanationData }) {
             </div>
 
             {/* Row Limit Selector */}
-            <div className="flex items-center gap-0.5 bg-slate-200/70 p-0.5 rounded-md text-xs">
+            <div className="flex items-center gap-0.5 bg-[rgba(183,198,214,0.3)] p-0.5 rounded-md text-xs">
               {['10', '15', 'all'].map((limit) => (
                 <button
                   key={limit}
@@ -1120,8 +1120,8 @@ export default function ExplainabilityDashboard({ explanationData }) {
                   onClick={() => setLimitCount(limit)}
                   className={`px-2 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
                     limitCount === limit
-                      ? 'bg-white text-slate-900 shadow-2xs font-semibold'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-[var(--surface-card)] text-[var(--text-primary)] shadow-2xs font-semibold'
+                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   {limit === 'all' ? 'All (96)' : `Top ${limit}`}
@@ -1135,7 +1135,7 @@ export default function ExplainabilityDashboard({ explanationData }) {
         <div className="overflow-x-auto">
           <table className="w-full text-xs sm:text-sm" aria-label="SHAP feature contributions table">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+              <tr className="bg-[var(--surface-bg)] border-b border-[var(--border-default)] text-[var(--text-secondary)] text-[11px] font-semibold uppercase tracking-wider">
                 <th className="text-center px-4 py-2.5 w-12">
                   #
                 </th>
@@ -1154,39 +1154,39 @@ export default function ExplainabilityDashboard({ explanationData }) {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[var(--border-muted)]">
               {processedTableRows.length > 0 ? (
                 processedTableRows.map((row) => (
                   <tr
                     key={row.feature}
-                    className="hover:bg-slate-50/70 transition-colors duration-100 group"
+                    className="hover:bg-[rgba(183,198,214,0.15)] transition-colors duration-100 group"
                   >
-                    <td className="px-4 py-2.5 text-slate-400 font-mono text-xs text-center">
+                    <td className="px-4 py-2.5 text-[var(--text-muted)] font-mono text-xs text-center">
                       {row.displayRank}
                     </td>
                     <td className="px-4 py-2.5">
-                      <span className="font-semibold text-slate-900 text-xs sm:text-sm">
+                      <span className="font-semibold text-[var(--text-primary)] text-xs sm:text-sm">
                         {row.label}
                       </span>
                     </td>
                     <td className="px-4 py-2.5">
                       {row.origVal ? (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono font-medium bg-slate-100 text-slate-800 border border-slate-200/70">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono font-medium bg-[var(--surface-bg)] text-[var(--text-primary)] border border-[var(--border-default)]">
                           {row.origVal}
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono text-xs">—</span>
+                        <span className="text-[var(--text-muted)] font-mono text-xs opacity-60">—</span>
                       )}
                     </td>
                     <td className="px-4 py-2.5 text-center">
                       {row.positive ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
-                          <ArrowUpRight className="w-3 h-3 text-emerald-600" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[var(--status-success-bg)] text-[var(--status-success)] border border-[var(--status-success-border)]">
+                          <ArrowUpRight className="w-3 h-3 text-[var(--status-success)]" />
                           Increased
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/80">
-                          <ArrowDownRight className="w-3 h-3 text-rose-600" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[var(--status-danger-bg)] text-[var(--status-danger)] border border-[var(--status-danger-border)]">
+                          <ArrowDownRight className="w-3 h-3 text-[var(--status-danger)]" />
                           Decreased
                         </span>
                       )}
@@ -1194,7 +1194,7 @@ export default function ExplainabilityDashboard({ explanationData }) {
                     <td className="px-4 py-2.5 text-right">
                       <span
                         className={`font-bold font-mono text-xs sm:text-sm tabular-nums ${
-                          row.positive ? 'text-emerald-700' : 'text-rose-700'
+                          row.positive ? 'text-[var(--status-success)]' : 'text-[var(--status-danger)]'
                         }`}
                       >
                         {row.positive ? '+' : ''}
@@ -1205,10 +1205,10 @@ export default function ExplainabilityDashboard({ explanationData }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-10 text-center text-slate-400">
-                    <Search className="w-6 h-6 text-slate-300 mx-auto mb-1.5" />
-                    <p className="text-xs font-medium text-slate-600">No matching features found</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Try searching for a different keyword or reset filters.</p>
+                  <td colSpan={5} className="py-10 text-center text-[var(--text-muted)]">
+                    <Search className="w-6 h-6 text-[var(--text-muted)] mx-auto mb-1.5 opacity-60" />
+                    <p className="text-xs font-medium text-[var(--text-secondary)]">No matching features found</p>
+                    <p className="text-[11px] text-[var(--text-muted)] mt-0.5">Try searching for a different keyword or reset filters.</p>
                   </td>
                 </tr>
               )}
@@ -1217,13 +1217,13 @@ export default function ExplainabilityDashboard({ explanationData }) {
             {/* Footer reconciliation row */}
             {baseValue != null && predictedLimit != null && (
               <tfoot>
-                <tr className="border-t-2 border-slate-200 bg-slate-50/80 text-xs">
-                  <td colSpan={4} className="px-4 py-2.5 font-semibold text-slate-700">
+                <tr className="border-t-2 border-[var(--border-default)] bg-[var(--surface-bg)] text-xs">
+                  <td colSpan={4} className="px-4 py-2.5 font-semibold text-[var(--text-secondary)]">
                     Model Baseline{' '}
-                    <span className="font-mono font-bold text-slate-900">{formatCurrency(baseValue)}</span>
+                    <span className="font-mono font-bold text-[var(--text-primary)]">{formatCurrency(baseValue)}</span>
                     {' '}+ all 96 feature contributions = AI Predicted Limit
                   </td>
-                  <td className="px-4 py-2.5 text-right font-extrabold font-mono text-xs sm:text-sm text-slate-900">
+                  <td className="px-4 py-2.5 text-right font-extrabold font-mono text-xs sm:text-sm text-[var(--text-primary)]">
                     {formatCurrency(predictedLimit)}
                   </td>
                 </tr>
